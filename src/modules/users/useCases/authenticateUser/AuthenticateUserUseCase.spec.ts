@@ -24,7 +24,7 @@ describe('Authenticate user.', () => {
     const authResponse = await authenticateUserUseCase.execute({
       email: 'teste@test.com',
       password: 'passTest'
-    })
+    });
 
     expect(authResponse).toHaveProperty('token')
   });

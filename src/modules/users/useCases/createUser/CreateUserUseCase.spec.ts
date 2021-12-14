@@ -18,7 +18,7 @@ describe('Create new user.', () => {
       password: 'passTest'
     });
 
-    expect(newUser).toHaveProperty('id')
+    expect(newUser).toHaveProperty('id');
   });
 
   it('Should not be able to create new user with same email', async () => {

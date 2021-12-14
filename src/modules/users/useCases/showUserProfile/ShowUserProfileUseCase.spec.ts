@@ -14,7 +14,7 @@ describe('Show profile user.', () => {
     showUserProfileUseCase = new ShowUserProfileUseCase(usersRepository);
   })
 
-  it('Should be able to authenticate user.', async () => {
+  it('Should be able to show user profile.', async () => {
     const user = await createUserUseCase.execute({
       name: 'User test',
       email: 'teste@test.com',
