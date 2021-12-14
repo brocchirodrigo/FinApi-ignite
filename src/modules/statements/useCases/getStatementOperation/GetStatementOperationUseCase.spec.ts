@@ -4,7 +4,7 @@ import { CreateUserUseCase } from '../../../users/useCases/createUser/CreateUser
 import { InMemoryStatementsRepository } from '../../repositories/in-memory/InMemoryStatementsRepository';
 import { CreateStatementUseCase } from '../createStatement/CreateStatementUseCase';
 
-import { GetBalanceUseCase } from './GetBalanceUseCase';
+import { GetStatementOperationUseCase } from './GetStatementOperationUseCase';
 
 import { AppError } from '../../../../shared/errors/AppError';
 
@@ -14,7 +14,7 @@ let usersRepository: InMemoryUsersRepository;
 let createUserUseCase: CreateUserUseCase;
 let inMemoryStatementsRepository: InMemoryStatementsRepository;
 let createStatementUseCase: CreateStatementUseCase;
-let getBalanceUseCase: GetBalanceUseCase;
+let getStatementOperationUseCase: GetStatementOperationUseCase;
 
 describe('Create statement.', () => {
   beforeEach(async () => {
@@ -22,7 +22,7 @@ describe('Create statement.', () => {
     createUserUseCase = new CreateUserUseCase(usersRepository);
     inMemoryStatementsRepository = new InMemoryStatementsRepository();
     createStatementUseCase = new CreateStatementUseCase(usersRepository, inMemoryStatementsRepository);
-    getBalanceUseCase = new GetBalanceUseCase(inMemoryStatementsRepository, usersRepository);
+    getStatementOperationUseCase = new GetStatementOperationUseCase(usersRepository, inMemoryStatementsRepository);
   });
 
   async function createUser( name: string, email: string, password: string ): Promise<User> {
@@ -40,32 +40,54 @@ describe('Create statement.', () => {
 
     const { id } = user;
 
-    await createStatementUseCase.execute({
+    const statement = await createStatementUseCase.execute({
       user_id: id as string,
       type: 'deposit' as any,
       amount: 10,
       description: 'test deposit',
     });
 
-    await createStatementUseCase.execute({
+    const getStatement = await getStatementOperationUseCase.execute({
       user_id: id as string,
-      type: 'withdraw' as any,
-      amount: 5,
-      description: 'test withdraw',
-    });
+      statement_id: statement.id as string,
+    })
 
-    const balance = await getBalanceUseCase.execute({user_id: id as string})
+    expect(getStatement).toHaveProperty('id');
+    expect(getStatement.type).toBe('deposit');
+    expect(getStatement.amount).toBe(10);
 
-    expect(balance).toHaveProperty('statement');
-    expect(balance).toHaveProperty('balance');
-    expect(balance.statement.length).toBe(2);
-    expect(balance.balance).toBe(5);
   });
 
-  it('Should not be able to show balance with user not exists.', async () => {
+  it('Should not be able to show not exists statement or user.', async () => {
+    const user = await createUser('User test', 'teste@teste.com', 'passTest');
+
+    const { id } = user;
+
+    const statement = await createStatementUseCase.execute({
+      user_id: id as string,
+      type: 'deposit' as any,
+      amount: 10,
+      description: 'test deposit',
+    });
+
     expect(async () => {
-      await getBalanceUseCase.execute({
+      await getStatementOperationUseCase.execute({
         user_id: 'id' as string,
+        statement_id: 'id' as string,
+      });
+    }).rejects.toBeInstanceOf(AppError);
+
+    expect(async () => {
+      await getStatementOperationUseCase.execute({
+        user_id: id as string,
+        statement_id: 'id' as string,
+      });
+    }).rejects.toBeInstanceOf(AppError);
+
+    expect(async () => {
+      await getStatementOperationUseCase.execute({
+        user_id: 'id' as string,
+        statement_id: statement.id as string,
       });
     }).rejects.toBeInstanceOf(AppError);
   });
