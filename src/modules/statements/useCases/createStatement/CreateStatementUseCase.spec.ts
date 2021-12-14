@@ -17,8 +17,8 @@ describe('Create statement.', () => {
   beforeEach(async () => {
     usersRepository = new InMemoryUsersRepository();
     createUserUseCase = new CreateUserUseCase(usersRepository);
-    inMemoryStatementsRepository = new InMemoryStatementsRepository()
-    createStatementUseCase = new CreateStatementUseCase(usersRepository, inMemoryStatementsRepository)
+    inMemoryStatementsRepository = new InMemoryStatementsRepository();
+    createStatementUseCase = new CreateStatementUseCase(usersRepository, inMemoryStatementsRepository);
   });
 
   async function createUser( name: string, email: string, password: string ): Promise<User> {
@@ -111,4 +111,4 @@ describe('Create statement.', () => {
       });
     }).rejects.toBeInstanceOf(AppError);
   });
-})
+});
