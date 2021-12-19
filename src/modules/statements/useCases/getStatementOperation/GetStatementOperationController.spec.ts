@@ -30,7 +30,7 @@ describe('Integration - Get statement by id.', () => {
     await connection.close();
   });
 
-  it('Should be able to get statement by user user.', async () => {
+  it('Should be able to get statement by user.', async () => {
     const response = await request(app).post('/api/v1/sessions').send({
       email: "teste@teste.com",
       password: "passTest"

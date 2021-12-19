@@ -15,6 +15,10 @@ export class GetStatementOperationController {
       statement_id
     });
 
+    if (statementOperation.type !== 'transfer') {
+      delete statementOperation.sender_id
+    }
+
     return response.json(statementOperation);
   }
 }

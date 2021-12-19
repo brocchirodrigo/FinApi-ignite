@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules --respawn ./src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
-    "test": "NODE_ENV=test jest --runInBand --setupFiles ./setup-tests.ts --forceExit"
+    "test": "NODE_ENV=test jest --runInBand --detectOpenHandles --setupFiles ./setup-tests.ts --forceExit"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

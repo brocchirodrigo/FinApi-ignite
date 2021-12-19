@@ -4,6 +4,7 @@ export class BalanceMap {
   static toDTO({statement, balance}: { statement: Statement[], balance: number}) {
     const parsedStatement = statement.map(({
       id,
+      sender_id,
       amount,
       description,
       type,
@@ -12,6 +13,7 @@ export class BalanceMap {
     }) => (
       {
         id,
+        sender_id,
         amount: Number(amount),
         description,
         type,
@@ -22,7 +24,7 @@ export class BalanceMap {
 
     return {
       statement: parsedStatement,
-      balance: Number(balance)
+      balance: Number(balance.toFixed(2))
     }
   }
 }
